@@ -1,12 +1,12 @@
-# gatsby-source-googlemaps-geocoding
+# gatsby-source-nasa
 
-This source plugin for Gatsby will make location information from [Google Maps](https://cloud.google.com/maps-platform/) available in GraphQL queries.
+This source plugin for Gatsby will make NASA image URLs available in GraphQL queries.
 
 ## Installation
 
 ```sh
 # Install the plugin
-yarn add gatsby-source-googlemaps-geocoding
+yarn add gatsby-source-nasa
 ```
 
 In `gatsby-config.js`:
@@ -15,26 +15,30 @@ In `gatsby-config.js`:
 module.exports = {
   plugins: [
     {
-      resolve: 'gatsby-source-googlemaps-geocoding',
+      resolve: 'gatsby-source-nasa',
       options: {
-        key: 'YOUR_GOOGLE_MAPS_GEOCODING_API_KEY',
-        address: 'ADDRESS_YOU_ARE_GEOCODING'
+        key: "YOUR_NASA_API_KEY",
+        images: [
+          {
+            type: 'apod',
+            date:
+          },
+          {
+            type: 'epic',
+            date:
+          }
+        ]
       },
     }
   ]
 };
 ```
 
-**NOTE:** To get a Google Maps Geocoding API key, [register for a Google Maps dev account](https://console.cloud.google.com/google/maps-apis).
+**NOTE:** To get a NASA API key, [register here](https://api.nasa.gov/index.html#apply-for-an-api-key).
 
 ## Configuration Options
 
-The configuration options for this plugin are currently a small subset of the [geocoding API parameters](https://developers.google.com/maps/documentation/geocoding/intro). Please review those docs for more details and feel free to contribute to this repo to expand the accepted parameters.
-
-| Option           | Default   | Description                                                                                                                                                                                                                                                                |
-| ---------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `key`            |           | **[required]** Your application's API key. This key identifies your application for purposes of quota management.                                                                                                                                                                                                                                        |
-| `address`       |           | **[required]** The street address that you want to geocode, in the format used by the national postal service of the country concerned.                                                                                                                                             |
+The configuration options for this plugin are currently very small. You can set 'apod' and/or 'epic' types and provide an optional date in YYYY-MM-DD format.
 
 ### Example Configuration
 
@@ -42,40 +46,57 @@ The configuration options for this plugin are currently a small subset of the [g
 module.exports = {
   plugins: [
     {
-      resolve: 'gatsby-source-googlemaps-geocoding',
+      resolve: 'gatsby-source-nasa',
       options: {
-        key: process.env.GOOGLE_MAPS_GEOCODING_API_KEY,
-        address: `Boston, MA`
+        key: process.env.NASA_API_KEY,
+        images: [
+          {
+            type: 'apod',
+            date: '2019-01-01'
+          },
+          {
+            type: 'epic',
+            date: '2019-01-01'
+          }
+        ]
       }
     }
   ]
 };
 ```
 
-## Querying Google Maps geocoding information
+## Querying NASA image information
 
-Once the plugin is configured, one new query is available in GraphQL: `allLocationData`.
+Once the plugin is configured, one new query is available in GraphQL: `allNasaData`.
 
-Here’s an example query to load the latitude and longitude for Boston, MA:
+Here are example queries to load APOD and EPIC images:
 
 ```gql
-query LocationQuery {
-  allLocationData {
+query ApodQuery {
+  allNasaData(filter: {type: {eq: "apod"}}) {
     edges {
       node {
-        results {
-          geometry {
-            location_type
-            location {
-              lat
-              lng
-            }
-          }
-        }
+        type
+        date
+        url
       }
     }
   }
 }
 ```
 
-See the [Google Maps Geocoding API docs](https://developers.google.com/maps/documentation/geocoding/intro) or the GraphiQL UI for info on all returned fields.
+```gql
+query EpicQuery {
+  allNasaData(filter: {type: {eq: "epic"}}) {
+    edges {
+      node {
+        type
+        date
+        url
+      }
+    }
+  }
+}
+```
+
+See the GraphiQL UI for info on all returned fields.
