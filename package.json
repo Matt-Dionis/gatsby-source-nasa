@@ -15,5 +15,14 @@
     "build": "babel src --out-dir . --ignore __tests__",
     "prepublish": "yarn build"
   },
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "dependencies": {
+    "node-fetch": "^2.3.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1"
+  }
 }
